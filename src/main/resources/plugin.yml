@@ -1,0 +1,6 @@
+name: PlanetMaker
+main: io.github.seggan.planetmaker.PlanetMaker
+version: ${version}
+author: Seggan
+depend: [Slimefun, Galactifun]
+api-version: 1.18
