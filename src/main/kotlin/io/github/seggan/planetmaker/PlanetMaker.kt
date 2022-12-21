@@ -1,8 +1,9 @@
 package io.github.seggan.planetmaker
 
+import io.github.seggan.planetmaker.conversion.resolveUnit
 import io.github.seggan.planetmaker.fcl.parsing.FclLexer
 import io.github.seggan.planetmaker.fcl.parsing.FclParser
-import io.github.seggan.planetmaker.fcl.resolveUnit
+import org.bukkit.World.Environment
 import org.bukkit.plugin.java.JavaPlugin
 
 class PlanetMaker : PluginBaseClass() {
@@ -25,7 +26,7 @@ class PlanetMaker : PluginBaseClass() {
             if (file.extension == "fcl") {
                 logger.info("Loading planet ${file.nameWithoutExtension}")
                 val lexer = FclLexer(file.readText())
-                val parser = FclParser(lexer.lex(), ::resolveUnit)
+                val parser = FclParser(lexer.lex(), defaultVars, ::resolveUnit)
                 val planet = parser.parse()
             }
         }
@@ -36,3 +37,9 @@ class PlanetMaker : PluginBaseClass() {
     override fun getBugTrackerURL(): String? = null
 
 }
+
+private val defaultVars = mapOf(
+    "overworld" to Environment.NORMAL,
+    "nether" to Environment.NETHER,
+    "end" to Environment.THE_END
+)

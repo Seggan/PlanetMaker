@@ -1,4 +1,4 @@
-package io.github.seggan.planetmaker.fcl
+package io.github.seggan.planetmaker.conversion
 
 import java.math.BigDecimal
 

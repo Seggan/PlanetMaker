@@ -4,6 +4,7 @@ import io.github.seggan.planetmaker.fcl.FclObject
 
 class FclParser(
     private val tokens: List<Token>,
+    private val predefined: Map<String, Any> = emptyMap(),
     private val parentheticalHandler: (String, Any, String) -> Any = { _, value, _ -> value }
 ) {
 
@@ -63,6 +64,10 @@ class FclParser(
             TokenType.NUMBER -> token.value.toBigDecimal()
             TokenType.TRUE -> true
             TokenType.FALSE -> false
+            TokenType.IDENTIFIER -> predefined[token.value] ?: throw FclParseException(
+                "Unknown identifier '${token.value}'",
+                token
+            )
             else -> throw FclParseException("Unexpected token '${token.value}'", token)
         }
         if (currentToken.type == TokenType.PARENTHETICAL) {
