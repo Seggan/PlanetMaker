@@ -42,11 +42,7 @@ class FclParser(
                 }
                 TokenType.COLON -> {
                     pos++
-                    var value = parseValue()
-                    if (nextToken.type == TokenType.PARENTHETICAL) {
-                        value = parentheticalHandler(key.value, value, consumeToken(TokenType.PARENTHETICAL).value)
-                    }
-                    properties[key.value] = value
+                    properties[key.value] = parseValue(name)
                 }
                 else -> throw FclParseException("Unexpected token '${nextToken.value}'", nextToken)
             }
@@ -60,15 +56,19 @@ class FclParser(
         return FclObject(name, properties, objects)
     }
 
-    private fun parseValue(): Any {
+    private fun parseValue(name: String): Any {
         val token = tokens[pos++]
-        return when (token.type) {
+        val value = when (token.type) {
             TokenType.STRING -> token.value
             TokenType.NUMBER -> token.value.toBigDecimal()
             TokenType.TRUE -> true
             TokenType.FALSE -> false
             else -> throw FclParseException("Unexpected token '${token.value}'", token)
         }
+        if (currentToken.type == TokenType.PARENTHETICAL) {
+            return parentheticalHandler(name, value, currentToken.value)
+        }
+        return value
     }
 
     private fun consumeToken(type: TokenType): Token {
